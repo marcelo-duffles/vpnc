@@ -343,6 +343,13 @@ static const struct config_names_s {
 		"visible name of the TUN/TAP interface",
 		NULL
 	}, {
+		CONFIG_IF_MACADDR, 1, 1,
+		"--ifmacaddr",
+		"Interface MAC ",
+		"<ASCII string>",
+		"especified MAC address for the TAP interface",
+		NULL
+	}, {
 		CONFIG_IF_MODE, 1, 1,
 		"--ifmode",
 		"Interface mode ",

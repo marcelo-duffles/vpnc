@@ -116,5 +116,6 @@ struct sa_block {
 
 extern int volatile do_kill;
 extern void vpnc_doit(struct sa_block *s);
+extern int macaddr_atoi(const char *str, uint8_t *mac);
 
 #endif

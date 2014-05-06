@@ -28,6 +28,7 @@
 
 #include <sys/socket.h>
 #include <net/if.h>
+#include <net/if_arp.h>
 
 #ifdef __sun__
 #include <ctype.h>
@@ -451,6 +452,7 @@ int tun_open(char *dev, enum if_mode_enum mode)
 		close(fd);
 		return err;
 	}
+
 	strcpy(dev, ifr.ifr_name);
 	return fd;
 }
@@ -693,6 +695,33 @@ int tun_get_hwaddr(int fd, char *dev, uint8_t *hwaddr)
 	return -1;
 #endif
 }
+
+/*
+ * Set HW addr
+ */
+int tun_set_hwaddr(char *dev, uint8_t *hwaddr)
+{
+#if defined(SIOCSIFHWADDR)
+	struct ifreq ifr;
+	int fd;
+	
+	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+		return -1;
+	}
+	
+	memset(&ifr, 0, sizeof(struct ifreq));
+	strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+
+	memcpy(ifr.ifr_hwaddr.sa_data, hwaddr, ETH_ALEN);
+	ifr.ifr_hwaddr.sa_family = ARPHRD_ETHER;
+	if ((ioctl(fd, SIOCSIFHWADDR, (void *)&ifr)) < 0) {
+		return -1;
+  }
+	
+	return 0;
+#endif
+}
+
 
 /***********************************************************************/
 /* other support functions */

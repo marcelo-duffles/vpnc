@@ -349,9 +349,11 @@ static void setup_tunnel(struct sa_block *s)
 #endif
 	
 	if (opt_if_mode == IF_MODE_TAP) {
-		if (tun_get_hwaddr(s->tun_fd, s->tun_name, s->tun_hwaddr) < 0) {
+		if (config[CONFIG_IF_MACADDR] && !macaddr_atoi(config[CONFIG_IF_MACADDR], s->tun_hwaddr)) 
+			if (tun_set_hwaddr(s->tun_name, s->tun_hwaddr) < 0) 
+				error(1, errno, "can't set the configured MAC address");
+		if (tun_get_hwaddr(s->tun_fd, s->tun_name, s->tun_hwaddr) < 0) 
 			error(1, errno, "can't get tunnel HW address");
-		}
 		hex_dump("interface HW addr", s->tun_hwaddr, ETH_ALEN, NULL);
 	}
 }

@@ -124,6 +124,26 @@ static uint8_t global_buffer_rx[MAX_HEADER + MAX_PACKET + ETH_HLEN];
 static uint8_t global_buffer_tx[MAX_HEADER + MAX_PACKET + ETH_HLEN];
 
 /*
+ * macaddr_atoi --
+ *	translate string MAC address to uint8_t array
+ */
+int macaddr_atoi(const char *str, uint8_t *mac)
+{
+        int count, i;
+        unsigned int amac[ETH_ALEN];
+
+        count = sscanf(str, "%x%*c%x%*c%x%*c%x%*c%x%*c%x",
+            &amac[0], &amac[1], &amac[2],
+            &amac[3], &amac[4], &amac[5]);
+        if (count < ETH_ALEN) {
+                return (1);
+        }
+        for (i=0; i<ETH_ALEN; i++)
+                mac[i] = (amac[i] & 0xff);
+        return 0;
+}
+
+/*
  * in_cksum --
  *	Checksum routine for Internet Protocol family headers (C Version)
  */
